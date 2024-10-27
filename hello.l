@@ -1,32 +1,20 @@
 %{
-#include <stdio.h>
-
-int li = 0; // Line counter
-int ch = 0; // Character counter
-int w = 0;  // Word counter
+int li = 0;
+int ch = 0;
+int w = 0;
 %}
-
 %%
-[a-zA-Z0-9]+ { ch += yyleng; w++; }  // Count alphanumeric characters and words
-[ \t]+      { /* Ignore whitespace */ } // Ignore spaces and tabs
-\n          { li++; }                  // Count each newline
-.           { ch++; }                  // Count any other character
+[a-zA-Z0-9]+ { ch += yyleng; w++; } // Count alphanumeric characters and words
+\n { li++; }
 %% 
-
 int main() {
-    FILE *yyin = fopen("input.txt", "r"); // Open input file
-    if (!yyin) {
-        perror("Error opening file");
-        return 1;
-    }
-    
-    yylex(); // Run the lexical analyzer
-    printf("The number of characters: %d, number of words: %d, number of lines: %d\n", ch, w, li);
-    fclose(yyin); // Close the file
+    FILE *yyin = fopen("input.txt", "r");
+    yylex(); 
+    printf("The number of characters: %d, words: %d, lines: %d\n", ch, w, li);
+    fclose(yyin);
     return 0;
 }
-
 int yywrap() {
-    return 1; // Indicates end of input
+    return 1;
 }
 
