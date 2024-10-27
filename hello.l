@@ -1,37 +1,23 @@
 %{
-#include <stdio.h>
-
-int li = 0; // Line count
-int ch = 0; // Character count
-int w = 0;  // Word count
+int li = 0; // Line counter
+int ch = 0; // Character counter
+int w = 0;  // Word counter
 %}
 
 %%
-
-[a-zA-Z0-9]+ { ch += yyleng; }    // Match alphanumeric strings and count their length as characters
-[ \t]+       { /* Ignore spaces and tabs, handled in word counting */ }
-\n           { li++; w++; ch++; }  // Newline increments line count and counts the end of a word
-.            { ch++; }             // Count any other character
-
+[a-zA-Z0-9] { ch++; }          // Count each alphanumeric character
+" "        { w++; }            // Count each space as a word delimiter
+"\n"       { li++; w++; }      // Count each newline as a new line and word delimiter
 %%
 
 int main() {
-    yyin = fopen("input.txt", "r");  // Open the file for reading
-    if (!yyin) {
-        perror("Failed to open file");
-        return 1;
-    }
-    yylex();  // Run the lexer to process the file
-
-    printf("Number of characters: %d\n", ch);
-    printf("Number of words: %d\n", w);
-    printf("Number of lines: %d\n", li);
-
-    fclose(yyin);  // Close the file after processing
+    yyin = fopen("input.txt", "r");  // Open input file
+    yylex();                         // Run the lexical analyzer
+    printf("The number of characters: %d, number of words: %d, number of lines: %d\n", ch, w, li);
     return 0;
 }
 
 int yywrap() {
-    return 1;
+    return 1;  // Indicates end of input
 }
 
