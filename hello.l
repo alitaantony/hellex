@@ -5,20 +5,20 @@ int w = 0;
 %}
 
 %%
-
-[a-zA-Z0-9] { ch++; }
-" " { w++; }
-"\n" { li++; w++; }
-
+[a-zA-Z0-9] {ch++;}
+" " {w++;}
+"\n" {li++; w++;}
 %%
 
-int main() {
-    yyin = fopen("input.txt", "r");
-    yylex();
-    printf("The number of characters: %d, number of words: %d, number of lines: %d\n", ch, w, li);
-    return 0;
+int main()
+{
+yyin = fopen("input.txt","r");
+yylex();
+printf("The no of lines : %d, words : %d, characters : %d",li,w,ch);
+return 0;
 }
 
-int yywrap() {
-    return 1;
+int yywrap()
+{
+return 1;
 }
