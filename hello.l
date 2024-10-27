@@ -1,33 +1,37 @@
 %{
+#include <stdio.h>
 
-  #include "y.tab.h"
-  int yyerror(char *errormsg);
-  int yyparse();
+int li = 0; // Line count
+int ch = 0; // Character count
+int w = 0;  // Word count
 %}
-  
-%%
-
-("hi"|"oi")"\n"       { return HI;  }
-("tchau"|"bye")"\n"   { return BYE; }
-[-[]+.,><]            { return yytext[0]; }
-.                     { yyerror("Unknow char");  }
 
 %%
 
-int main(void)
-{
-     yyparse();
-     return 0;
+[a-zA-Z0-9]+ { ch += yyleng; }    // Match alphanumeric strings and count their length as characters
+[ \t]+       { /* Ignore spaces and tabs, handled in word counting */ }
+\n           { li++; w++; ch++; }  // Newline increments line count and counts the end of a word
+.            { ch++; }             // Count any other character
+
+%%
+
+int main() {
+    yyin = fopen("input.txt", "r");  // Open the file for reading
+    if (!yyin) {
+        perror("Failed to open file");
+        return 1;
+    }
+    yylex();  // Run the lexer to process the file
+
+    printf("Number of characters: %d\n", ch);
+    printf("Number of words: %d\n", w);
+    printf("Number of lines: %d\n", li);
+
+    fclose(yyin);  // Close the file after processing
+    return 0;
 }
 
-int yywrap(void)
-{
-     return 0;
-}
-
-int yyerror(char *errormsg)
-{
-      fprintf(stderr, "%s\n", errormsg);
-      exit(1);
+int yywrap() {
+    return 1;
 }
 
